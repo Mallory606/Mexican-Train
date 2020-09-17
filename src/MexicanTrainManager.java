@@ -25,18 +25,38 @@ public class MexicanTrainManager{
         boneyard = new ArrayList<>();
         for(int i = 0; i < 10; i++){
             for(int j = 0; j < 10; j++){
-                boneyard.add(new Domino(i, j));
+                if(i == 9 && j == 9) {
+                    mexicanTrain = new ArrayList<>();
+                    mexicanTrain.add(new Domino(9, 9));
+                }
+                else{ boneyard.add(new Domino(i, j)); }
             }
         }
     }
 
     private void initializePlayers(int numComputers){
         players = new ArrayList<>();
+        playerTrains = new ArrayList<>();
         for(int i = 0; i < (numPlayers-numComputers); i++){
             players.add(new HumanPlayer());
+            playerTrains.add(new ArrayList<>());
         }
         for(int j = 0; j < numComputers; j++){
             players.add(new ComputerPlayer());
+            playerTrains.add(new ArrayList<>());
+        }
+        initializeHands();
+    }
+
+    private void initializeHands(){
+        int numTiles;
+        if(numPlayers == 2){ numTiles = 15; }
+        else if(numPlayers == 3){ numTiles = 13; }
+        else{ numTiles = 10; }
+        for(int i = 0; i < numPlayers; i++){
+            for(int j = 0; j < numTiles; j++){
+                players.get(i).dealDomino(pullFromBoneyard());
+            }
         }
     }
 
@@ -55,7 +75,7 @@ public class MexicanTrainManager{
             System.out.println("How many players?");
             input = in.readLine();
             numberInput = Integer.parseInt(input);
-            if(numberInput > 0 && numberInput < 5){ validInput = true; }
+            if(numberInput > 1 && numberInput < 5){ validInput = true; }
             else{ System.out.println("Invalid input! Try again!"); }
         }
         numPlayers = numberInput;
