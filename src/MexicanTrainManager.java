@@ -30,6 +30,16 @@ public class MexicanTrainManager{
         }
     }
 
+    private void initializePlayers(int numComputers){
+        players = new ArrayList<>();
+        for(int i = 0; i < (numPlayers-numComputers); i++){
+            players.add(new HumanPlayer());
+        }
+        for(int j = 0; j < numComputers; j++){
+            players.add(new ComputerPlayer());
+        }
+    }
+
     private Domino pullFromBoneyard(){
         int rand = (int)(Math.random()*boneyard.size());
         return boneyard.remove(rand);
@@ -38,12 +48,27 @@ public class MexicanTrainManager{
     private void consoleGame() throws IOException{
         BufferedReader in=new BufferedReader(new InputStreamReader(System.in));
         String input;
-        int numberInput;
+        int numberInput = 0;
+        boolean validInput = false;
         System.out.println("Let's play Mexican Train!");
-        System.out.println("How many players?");
-        input = in.readLine();
-        numberInput = Integer.parseInt(input);
+        while(!validInput){
+            System.out.println("How many players?");
+            input = in.readLine();
+            numberInput = Integer.parseInt(input);
+            if(numberInput > 0 && numberInput < 5){ validInput = true; }
+            else{ System.out.println("Invalid input! Try again!"); }
+        }
         numPlayers = numberInput;
-        System.out.println(numberInput + " players!");
+        validInput = false;
+        while(!validInput){
+            System.out.println("How many computers?");
+            input = in.readLine();
+            numberInput = Integer.parseInt(input);
+            if(numberInput <= numPlayers){ validInput = true; }
+            else{ System.out.println("Invalid input! Try again!"); }
+        }
+        initializePlayers(numberInput);
+        System.out.println("Starting game with " + numPlayers + " players and "
+                + numberInput + " computers!");
     }
 }
