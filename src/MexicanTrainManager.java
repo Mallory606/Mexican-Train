@@ -90,5 +90,8 @@ public class MexicanTrainManager{
         initializePlayers(numberInput);
         System.out.println("Starting game with " + numPlayers + " players and "
                 + numberInput + " computers!");
+        for(int i = 0; i < numPlayers; i++){
+            System.out.println("Player "+(i+1)+": "+players.get(i).getHand());
+        }
     }
 }

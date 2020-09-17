@@ -19,4 +19,12 @@ public abstract class Player{
     public int getScore(){ return score; }
 
     public void updateScore(int update){ score += update; }
+
+    public String getHand(){
+        String handRep = "";
+        for(Domino d : hand){
+            handRep += d.toString()+" ";
+        }
+        return handRep;
+    }
 }

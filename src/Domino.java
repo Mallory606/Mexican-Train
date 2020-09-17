@@ -11,7 +11,7 @@ public class Domino{
 
     public int getRight(){ return right; }
 
-    public String getStringRep(){ return "[ "+left+" | "+right+" ]"; }
+    public String toString(){ return "[ "+left+" | "+right+" ]"; }
 
     public boolean isDouble(){ return left == right; }
 }
