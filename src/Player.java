@@ -2,10 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Player{
+    private int name;
     private List<Domino> hand;
     private int score;
 
-    public Player(){
+    public Player(int n){
+        name = n;
         hand = new ArrayList<>();
         score = 0;
     }
@@ -19,6 +21,8 @@ public abstract class Player{
     public int getScore(){ return score; }
 
     public void updateScore(int update){ score += update; }
+
+    public String toString(){ return "Player " + name; }
 
     public String getHand(){
         String handRep = "";

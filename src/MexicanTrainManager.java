@@ -9,7 +9,9 @@ public class MexicanTrainManager{
     private List<Player> players;
     private List<Domino> mexicanTrain;
     private List<List<Domino>> playerTrains;
+    private boolean[] trainMarked;
     private boolean consoleGame;
+    private boolean gameRunning;
     private int numPlayers;
 
     public MexicanTrainManager(boolean console){
@@ -35,16 +37,19 @@ public class MexicanTrainManager{
     }
 
     private void initializePlayers(int numComputers){
+        int playerNumber = 1;
         players = new ArrayList<>();
         playerTrains = new ArrayList<>();
         for(int i = 0; i < (numPlayers-numComputers); i++){
-            players.add(new HumanPlayer());
+            players.add(new HumanPlayer(playerNumber++));
             playerTrains.add(new ArrayList<>());
         }
         for(int j = 0; j < numComputers; j++){
-            players.add(new ComputerPlayer());
+            players.add(new ComputerPlayer(playerNumber++));
             playerTrains.add(new ArrayList<>());
         }
+        trainMarked = new boolean[numPlayers];
+        for(int k = 0; k < numPlayers; k++){ trainMarked[k] = false; }
         initializeHands();
     }
 
@@ -63,6 +68,24 @@ public class MexicanTrainManager{
     private Domino pullFromBoneyard(){
         int rand = (int)(Math.random()*boneyard.size());
         return boneyard.remove(rand);
+    }
+
+    private void printGameState(){
+        System.out.println("GameState:\n");
+        for(int i = 0; i < numPlayers; i++){
+            System.out.print(players.get(i).toString() + ": ");
+            if(trainMarked[i]){ System.out.print("* "); }
+            System.out.print("[ ");
+            for(Domino d : playerTrains.get(i)){
+                System.out.print(d.toString() + ", ");
+            }
+            System.out.println("]\n");
+        }
+        System.out.print("Mexican Train: [");
+        for(Domino d : mexicanTrain){
+            System.out.print(d.toString() + ", ");
+        }
+        System.out.println("]\n");
     }
 
     private void consoleGame() throws IOException{
@@ -93,5 +116,10 @@ public class MexicanTrainManager{
         for(int i = 0; i < numPlayers; i++){
             System.out.println("Player "+(i+1)+": "+players.get(i).getHand());
         }
+        gameRunning = true;
+        /*while(gameRunning){
+
+        }*/
+        printGameState();
     }
 }
