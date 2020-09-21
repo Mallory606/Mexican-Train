@@ -9,10 +9,11 @@ public class MexicanTrainManager{
     private List<Player> players;
     private List<Domino> mexicanTrain;
     private List<List<Domino>> playerTrains;
-    private boolean[] trainMarked;
+    private List<Integer> trainMarked;
     private boolean consoleGame;
     private boolean gameRunning;
     private int numPlayers;
+    private int currPlayer;
 
     public MexicanTrainManager(boolean console){
         consoleGame = console;
@@ -48,9 +49,12 @@ public class MexicanTrainManager{
             players.add(new ComputerPlayer(playerNumber++));
             playerTrains.add(new ArrayList<>());
         }
-        trainMarked = new boolean[numPlayers];
-        for(int k = 0; k < numPlayers; k++){ trainMarked[k] = false; }
+        trainMarked = new ArrayList<>();
+        for(int k = 0; k < numPlayers; k++){ trainMarked.add(0); }
         initializeHands();
+        for(Player p : players){
+            p.giveTrains(mexicanTrain, playerTrains, trainMarked);
+        }
     }
 
     private void initializeHands(){
@@ -74,7 +78,7 @@ public class MexicanTrainManager{
         System.out.println("GameState:\n");
         for(int i = 0; i < numPlayers; i++){
             System.out.print(players.get(i).toString() + ": ");
-            if(trainMarked[i]){ System.out.print("* "); }
+            if(trainMarked.get(i) == 1){ System.out.print("* "); }
             System.out.print("[ ");
             for(Domino d : playerTrains.get(i)){
                 System.out.print(d.toString() + ", ");
@@ -113,13 +117,15 @@ public class MexicanTrainManager{
         initializePlayers(numberInput);
         System.out.println("Starting game with " + numPlayers + " players and "
                 + numberInput + " computers!");
-        for(int i = 0; i < numPlayers; i++){
+        /*for(int i = 0; i < numPlayers; i++){
             System.out.println("Player "+(i+1)+": "+players.get(i).getHand());
-        }
-        gameRunning = true;
-        /*while(gameRunning){
-
         }*/
-        printGameState();
+        currPlayer = 0;
+        gameRunning = true;
+        while(gameRunning){
+            printGameState();
+            System.out.println("It's " + players.get(currPlayer).toString()
+                    + "'s turn!\n");
+        }
     }
 }

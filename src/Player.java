@@ -5,6 +5,9 @@ public abstract class Player{
     private int name;
     private List<Domino> hand;
     private int score;
+    private List<Domino> mexicanTrain;
+    private List<List<Domino>> playerTrains;
+    private List<Integer> trainMarked;
 
     public Player(int n){
         name = n;
@@ -14,9 +17,16 @@ public abstract class Player{
 
     public abstract void makeMove();
 
+    public void giveTrains(List<Domino> mexTrain, List<List<Domino>> plTrain,
+                           List<Integer> trainMrkd){
+        mexicanTrain = mexTrain;
+        playerTrains = plTrain;
+        trainMarked = trainMrkd;
+    }
+
     public void dealDomino(Domino d){ hand.add(d); }
 
-    public Domino playDomino(int i){ return hand.get(i); }
+    public Domino playDomino(int i){ return hand.remove(i); }
 
     public int getScore(){ return score; }
 
