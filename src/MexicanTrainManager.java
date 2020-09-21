@@ -42,7 +42,7 @@ public class MexicanTrainManager{
         players = new ArrayList<>();
         playerTrains = new ArrayList<>();
         for(int i = 0; i < (numPlayers-numComputers); i++){
-            players.add(new HumanPlayer(playerNumber++));
+            players.add(new HumanPlayer(playerNumber++, consoleGame));
             playerTrains.add(new ArrayList<>());
         }
         for(int j = 0; j < numComputers; j++){
@@ -53,7 +53,7 @@ public class MexicanTrainManager{
         for(int k = 0; k < numPlayers; k++){ trainMarked.add(0); }
         initializeHands();
         for(Player p : players){
-            p.giveTrains(mexicanTrain, playerTrains, trainMarked);
+            p.giveTrains(boneyard, mexicanTrain, playerTrains, trainMarked);
         }
     }
 
