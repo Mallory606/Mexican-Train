@@ -78,18 +78,32 @@ public class MexicanTrainManager{
         System.out.println("GameState:\n");
         for(int i = 0; i < numPlayers; i++){
             System.out.print(players.get(i).toString() + ": ");
-            if(trainMarked.get(i) == 1){ System.out.print("* "); }
+            if(trainMarked.get(i) == 1){ System.out.println("* "); }
             System.out.print("[ ");
-            for(Domino d : playerTrains.get(i)){
-                System.out.print(d.toString() + ", ");
-            }
+            printTrain(playerTrains.get(i));
             System.out.println("]\n");
         }
         System.out.print("Mexican Train: [");
-        for(Domino d : mexicanTrain){
-            System.out.print(d.toString() + ", ");
-        }
+        printTrain(mexicanTrain);
         System.out.println("]\n");
+    }
+
+    private void printTrain(List<Domino> train){
+        String line1 = "";
+        String line2 = "      ";
+        int line = 1;
+        for(Domino d : train){
+            if(line == 1){
+                line1 += d.toString() + " ";
+                line = 2;
+            }
+            else{
+                line2 += d.toString() + " ";
+                line = 1;
+            }
+        }
+        System.out.println(line1);
+        System.out.print(line2);
     }
 
     private void consoleGame() throws IOException{
@@ -126,6 +140,9 @@ public class MexicanTrainManager{
             printGameState();
             System.out.println("It's " + players.get(currPlayer).toString()
                     + "'s turn!\n");
+            players.get(currPlayer).makeMove();
+            if(currPlayer == numPlayers){ currPlayer = 0; }
+            else{ currPlayer++; }
         }
     }
 }
