@@ -79,13 +79,12 @@ public class MexicanTrainManager{
         for(int i = 0; i < numPlayers; i++){
             System.out.print(players.get(i).toString() + ": ");
             if(trainMarked.get(i) == 1){ System.out.println("* "); }
-            System.out.print("[ ");
             printTrain(playerTrains.get(i));
-            System.out.println("]\n");
+            System.out.println("\n");
         }
-        System.out.print("Mexican Train: [");
+        System.out.print("Mexican Train: ");
         printTrain(mexicanTrain);
-        System.out.println("]\n");
+        System.out.println("\n");
     }
 
     private void printTrain(List<Domino> train){

@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class Player{
     public int name;
-    private List<Domino> hand;
+    public List<Domino> hand;
     private int score;
     private List<Domino> boneyard;
     public List<Domino> mexicanTrain;
@@ -29,7 +29,7 @@ public abstract class Player{
 
     public void dealDomino(Domino d){ hand.add(d); }
 
-    public Domino playDomino(int i){ return hand.remove(i); }
+    //public Domino playDomino(int i){ return hand.remove(i); }
 
     public int getScore(){ return score; }
 
