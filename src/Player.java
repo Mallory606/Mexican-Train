@@ -83,6 +83,7 @@ public abstract class Player{
             return false;
         }
         if(domino.getLeft() == caboose.getRight()){
+            if(trainInd == name){ trainMarked.set(trainInd, 0); }
             train.add(hand.remove(domInd));
             return true;
         }

@@ -81,7 +81,7 @@ public class MexicanTrainManager{
         System.out.println("GameState:\n");
         for(int i = 0; i < numPlayers; i++){
             System.out.print(players.get(i).toString() + ": ");
-            if(trainMarked.get(i+1) == 1){ System.out.println("* "); }
+            if(trainMarked.get(i+1) == 1){ System.out.print("* "); }
             printTrain(playerTrains.get(i), false);
             System.out.println("\n");
         }
@@ -105,8 +105,19 @@ public class MexicanTrainManager{
             }
         }
         if(mexican){ line2 = "              " + line2; }
+        else{ line2 = "         " + line2; }
         System.out.println(line1);
         System.out.print(line2);
+    }
+
+    private void newRound(){
+        initializeBoneyard(--round);
+        for(Player p : players){ p.newHand(); }
+        playerTrains = new ArrayList<>();
+        for(int i = 0; i<numPlayers; i++){playerTrains.add(new ArrayList<>());}
+        trainMarked = new ArrayList<>();
+        for(int k = 0; k <= numPlayers; k++){ trainMarked.add(0); }
+        initializeHands();
     }
 
     private boolean roundOver(){
@@ -174,13 +185,7 @@ public class MexicanTrainManager{
             else{ currPlayer++; }
             if(roundOver()){
                 if(round == 0){ gameRunning = false; }
-                else{
-                    initializeBoneyard(--round);
-                    for(Player p : players){
-                        p.newHand();
-                    }
-                    initializeHands();
-                }
+                else{ newRound(); }
             }
         }
         System.out.println("GAME OVER");

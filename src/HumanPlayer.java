@@ -24,7 +24,10 @@ public class HumanPlayer extends Player{
             if(!pulled){ System.out.println("[d] draw from boneyard"); }
             else{ System.out.println("[d] pass"); }
             input = in.readLine();
-            if(input.equals("p")){ turnOver = playDomino(in); }
+            if(input.equals("p")){
+                turnOver = playDomino(in);
+                if(!turnOver){ System.out.println("Invalid move! Try again!");}
+            }
             else if(input.equals("d")){
                 if(!pulled){
                     pullFromBoneyard();
@@ -102,7 +105,7 @@ public class HumanPlayer extends Player{
         }
         dom = hand.get(dominoInd);
         moveMade = validMove(dominoInd, trainInd);
-        if(moveMade && dom.isDouble()){ moveMade = playDomino(in); }
+        if(moveMade && dom.isDouble()){ makeMoveConsole(); }
         return moveMade;
     }
 }
