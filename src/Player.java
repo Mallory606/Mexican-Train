@@ -62,7 +62,6 @@ public abstract class Player{
         List<Domino> train;
         Domino domino = hand.get(domInd);
         Domino caboose;
-        checkOpenDouble();
         if(trainInd == 0){ train = mexicanTrain; }
         else{
             train = playerTrains.get(trainInd-1);
@@ -90,7 +89,7 @@ public abstract class Player{
         else{ return false; }
     }
 
-    private void checkOpenDouble(){
+    public void checkOpenDouble(){
         trainMarked.set(0, 0);
         if(mexicanTrain.get(mexicanTrain.size()-1).isDouble()){
             trainMarked.set(0, 1);

@@ -105,6 +105,7 @@ public class HumanPlayer extends Player{
         }
         dom = hand.get(dominoInd);
         moveMade = validMove(dominoInd, trainInd);
+        checkOpenDouble();
         if(moveMade && dom.isDouble()){ makeMoveConsole(); }
         return moveMade;
     }

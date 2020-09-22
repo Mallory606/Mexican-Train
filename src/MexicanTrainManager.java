@@ -137,11 +137,11 @@ public class MexicanTrainManager{
     }
 
     private String tallyScores(){
-        int max = 0;
+        int min = 100;
         String winner = "";
         for(Player p : players){
             p.updateScore();
-            if(p.getScore() > max){ winner = p.toString(); }
+            if(p.getScore() < min){ winner = p.toString(); }
         }
         return winner;
     }
