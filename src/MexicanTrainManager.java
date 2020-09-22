@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MexicanTrainManager{
+    //Value 0 of trainMarked actually keeps track of whether there is an open double
     private List<Domino> boneyard;
     private List<Player> players;
     private List<Domino> mexicanTrain;
@@ -50,7 +51,7 @@ public class MexicanTrainManager{
             playerTrains.add(new ArrayList<>());
         }
         trainMarked = new ArrayList<>();
-        for(int k = 0; k < numPlayers; k++){ trainMarked.add(0); }
+        for(int k = 0; k <= numPlayers; k++){ trainMarked.add(0); }
         initializeHands();
         for(Player p : players){
             p.giveTrains(boneyard, mexicanTrain, playerTrains, trainMarked);

@@ -5,10 +5,7 @@ import java.io.InputStreamReader;
 public class HumanPlayer extends Player{
     private boolean consoleGame;
 
-    public HumanPlayer(int n, boolean console){
-        super(n);
-        consoleGame = console;
-    }
+    public HumanPlayer(int n, boolean console){ super(n, console); }
 
     @Override
     public void makeMove(){
@@ -51,7 +48,9 @@ public class HumanPlayer extends Player{
         int numInput;
         int dominoInd = 0;
         int trainInd = -1;
+        Domino dom;
         boolean validInput = false;
+        boolean moveMade;
         while(!validInput){
             System.out.println("Which domino would you like to play?");
             input = in.readLine();
@@ -88,6 +87,7 @@ public class HumanPlayer extends Player{
             input = in.readLine();
             if(input.toLowerCase().equals("mexican")){
                 trainInd = 0;
+                validInput = true;
             }
             else{
                 try {
@@ -107,8 +107,9 @@ public class HumanPlayer extends Player{
                 }
             }
         }
-
-
-        return false;
+        dom = hand.get(dominoInd);
+        moveMade = validMove(dominoInd, trainInd);
+        if(moveMade && dom.isDouble()){ moveMade = playDomino(in); }
+        return moveMade;
     }
 }
