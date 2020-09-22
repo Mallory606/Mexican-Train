@@ -6,7 +6,7 @@ public abstract class Player{
     public int name;
     public List<Domino> hand;
     private int score;
-    private boolean consoleGame;
+    public boolean consoleGame;
     private List<Domino> boneyard;
     public List<Domino> mexicanTrain;
     public List<List<Domino>> playerTrains;
@@ -31,9 +31,15 @@ public abstract class Player{
 
     public void dealDomino(Domino d){ hand.add(d); }
 
+    public void newHand(){ hand = new ArrayList<>(); }
+
     public int getScore(){ return score; }
 
-    public void updateScore(int update){ score += update; }
+    public void updateScore(){
+        int update = 0;
+        for(Domino d : hand){ update += d.getScoreTotal(); }
+        score += update;
+    }
 
     public void pullFromBoneyard(){
         int rand = (int)(Math.random()*boneyard.size());
@@ -50,27 +56,61 @@ public abstract class Player{
         return handRep;
     }
 
+    public boolean handEmpty(){ return hand.size() == 0; }
+
     public boolean validMove(int domInd, int trainInd){
-        List<Domino> train = playerTrains.get(trainInd);
+        List<Domino> train;
         Domino domino = hand.get(domInd);
-        Domino caboose = train.get(train.size()-1);
+        Domino caboose;
+        checkOpenDouble();
+        if(trainInd == 0){ train = mexicanTrain; }
+        else{
+            train = playerTrains.get(trainInd-1);
+            if(train.size() == 0){
+                if(trainInd == name){
+                    train.add(hand.remove(domInd));
+                    return true;
+                }
+                else{
+                    startTrainError();
+                    return false;
+                }
+            }
+        }
+        caboose = train.get(train.size()-1);
         if(!caboose.isDouble() && trainMarked.get(0) == 1){
             openDoubleError();
             return false;
         }
         if(domino.getLeft() == caboose.getRight()){
-            if(caboose.isDouble()){ trainMarked.set(0, 0); }
-            if(domino.isDouble()){ trainMarked.set(0, 1); }
             train.add(hand.remove(domInd));
             return true;
         }
         else{ return false; }
     }
 
+    private void checkOpenDouble(){
+        trainMarked.set(0, 0);
+        if(mexicanTrain.get(mexicanTrain.size()-1).isDouble()){
+            trainMarked.set(0, 1);
+        }
+        for(List<Domino> d : playerTrains){
+            if(d.size() != 0){
+                if(d.get(d.size()-1).isDouble()){ trainMarked.set(0, 1); }
+            }
+        }
+    }
+
     private void openDoubleError(){
         if(consoleGame){
             System.out.println("You have to handle the open double before " +
                     "you can play here.");
+        }
+    }
+
+    private void startTrainError(){
+        if(consoleGame){
+            System.out.println("You can't start another player's train!");
         }
     }
 }

@@ -15,23 +15,25 @@ public class MexicanTrainManager{
     private boolean gameRunning;
     private int numPlayers;
     private int currPlayer;
+    private int round;
 
     public MexicanTrainManager(boolean console){
         consoleGame = console;
-        initializeBoneyard();
+        round = 9;
+        initializeBoneyard(round);
         if(consoleGame){
             try{ consoleGame(); }
             catch(IOException e){ e.printStackTrace(); }
         }
     }
 
-    private void initializeBoneyard(){
+    private void initializeBoneyard(int round){
         boneyard = new ArrayList<>();
         for(int i = 0; i < 10; i++){
-            for(int j = 0; j < 10; j++){
-                if(i == 9 && j == 9) {
+            for(int j = i; j < 10; j++){
+                if(i == round && j == round) {
                     mexicanTrain = new ArrayList<>();
-                    mexicanTrain.add(new Domino(9, 9));
+                    mexicanTrain.add(new Domino(round, round));
                 }
                 else{ boneyard.add(new Domino(i, j)); }
             }
@@ -47,7 +49,7 @@ public class MexicanTrainManager{
             playerTrains.add(new ArrayList<>());
         }
         for(int j = 0; j < numComputers; j++){
-            players.add(new ComputerPlayer(playerNumber++));
+            players.add(new ComputerPlayer(playerNumber++, consoleGame));
             playerTrains.add(new ArrayList<>());
         }
         trainMarked = new ArrayList<>();
@@ -79,16 +81,16 @@ public class MexicanTrainManager{
         System.out.println("GameState:\n");
         for(int i = 0; i < numPlayers; i++){
             System.out.print(players.get(i).toString() + ": ");
-            if(trainMarked.get(i) == 1){ System.out.println("* "); }
-            printTrain(playerTrains.get(i));
+            if(trainMarked.get(i+1) == 1){ System.out.println("* "); }
+            printTrain(playerTrains.get(i), false);
             System.out.println("\n");
         }
         System.out.print("Mexican Train: ");
-        printTrain(mexicanTrain);
+        printTrain(mexicanTrain, true);
         System.out.println("\n");
     }
 
-    private void printTrain(List<Domino> train){
+    private void printTrain(List<Domino> train, boolean mexican){
         String line1 = "";
         String line2 = "      ";
         int line = 1;
@@ -102,8 +104,35 @@ public class MexicanTrainManager{
                 line = 1;
             }
         }
+        if(mexican){ line2 = "              " + line2; }
         System.out.println(line1);
         System.out.print(line2);
+    }
+
+    private boolean roundOver(){
+        String winner;
+        for(Player p : players){
+            if(p.handEmpty()){
+                winner = tallyScores();
+                if(consoleGame){
+                    System.out.println("Round over!");
+                    if(round == 0){ System.out.println(winner + " wins!"); }
+                    else{ System.out.println(winner + " is in the lead!"); }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String tallyScores(){
+        int max = 0;
+        String winner = "";
+        for(Player p : players){
+            p.updateScore();
+            if(p.getScore() > max){ winner = p.toString(); }
+        }
+        return winner;
     }
 
     private void consoleGame() throws IOException{
@@ -141,8 +170,19 @@ public class MexicanTrainManager{
             System.out.println("It's " + players.get(currPlayer).toString()
                     + "'s turn!\n");
             players.get(currPlayer).makeMove();
-            if(currPlayer == numPlayers){ currPlayer = 0; }
+            if(currPlayer == numPlayers-1){ currPlayer = 0; }
             else{ currPlayer++; }
+            if(roundOver()){
+                if(round == 0){ gameRunning = false; }
+                else{
+                    initializeBoneyard(--round);
+                    for(Player p : players){
+                        p.newHand();
+                    }
+                    initializeHands();
+                }
+            }
         }
+        System.out.println("GAME OVER");
     }
 }

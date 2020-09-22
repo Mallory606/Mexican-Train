@@ -20,4 +20,6 @@ public class Domino{
     public String toString(){ return "[ "+left+" | "+right+" ]"; }
 
     public boolean isDouble(){ return left == right; }
+
+    public int getScoreTotal(){ return left + right; }
 }

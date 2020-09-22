@@ -3,8 +3,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class HumanPlayer extends Player{
-    private boolean consoleGame;
-
     public HumanPlayer(int n, boolean console){ super(n, console); }
 
     @Override
@@ -26,9 +24,7 @@ public class HumanPlayer extends Player{
             if(!pulled){ System.out.println("[d] draw from boneyard"); }
             else{ System.out.println("[d] pass"); }
             input = in.readLine();
-            if(input.equals("p")){
-                turnOver = playDomino(in);
-            }
+            if(input.equals("p")){ turnOver = playDomino(in); }
             else if(input.equals("d")){
                 if(!pulled){
                     pullFromBoneyard();
@@ -74,10 +70,7 @@ public class HumanPlayer extends Player{
                 hand.get(dominoInd).flip();
                 validInput = true;
             }
-            else if(input.equals("n")){
-                hand.get(dominoInd).flip();
-                validInput = true;
-            }
+            else if(input.equals("n")){ validInput = true; }
             else{ System.out.println("Invalid input! Try again!"); }
         }
         validInput = false;
@@ -93,7 +86,7 @@ public class HumanPlayer extends Player{
                 try {
                     numInput = Integer.parseInt(input);
                     if(numInput > 0 && numInput <= playerTrains.size()){
-                        if(trainMarked.get(numInput) == 1) {
+                        if(trainMarked.get(numInput) == 1 || numInput == name){
                             trainInd = numInput;
                             validInput = true;
                         }
