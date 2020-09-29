@@ -112,11 +112,14 @@ public class MexicanTrainManager{
 
     private void newRound(){
         initializeBoneyard(--round);
-        for(Player p : players){ p.newHand(); }
         playerTrains = new ArrayList<>();
         for(int i = 0; i<numPlayers; i++){playerTrains.add(new ArrayList<>());}
         trainMarked = new ArrayList<>();
         for(int k = 0; k <= numPlayers; k++){ trainMarked.add(0); }
+        for(Player p : players){
+            p.newHand();
+            p.giveTrains(boneyard, mexicanTrain, playerTrains, trainMarked);
+        }
         initializeHands();
     }
 
