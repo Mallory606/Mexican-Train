@@ -1,5 +1,3 @@
-import java.io.BufferedReader;
-import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class ComputerPlayer extends Player{
@@ -10,19 +8,22 @@ public class ComputerPlayer extends Player{
         boolean validMove = false;
         boolean pulled = false;
         boolean pass = false;
-        Domino dom;
-        PriorityQueue<Domino> moveQueue = new PriorityQueue<>((o1, o2) -> {
-            if(o1.isDouble() && !o2.isDouble()){ return 1; }
-            else if(o2.isDouble() && !o1.isDouble()){ return -1; }
-            else{ return o1.getScoreTotal() - o2.getScoreTotal(); }
+        Integer domInd;
+        PriorityQueue<Integer> moveQueue = new PriorityQueue<>((o1, o2) -> {
+            Domino dom1 = hand.get(o1);
+            Domino dom2 = hand.get(o2);
+            if(dom1.isDouble() && !dom2.isDouble()){ return 1; }
+            else if(dom2.isDouble() && !dom1.isDouble()){ return -1; }
+            else{ return dom1.getScoreTotal() - dom2.getScoreTotal(); }
         });
 
-        moveQueue.addAll(hand);
+        for(int i = 0; i < hand.size(); i++){ moveQueue.add(i); }
         while(!validMove && !pass){
-            dom = moveQueue.poll();
-            if(dom == null){
+            domInd = moveQueue.poll();
+            if(domInd == null){
                 if(!pulled){
                     pullFromBoneyard();
+                    moveQueue.add(hand.size()-1);
                     pulled = true;
                 }
                 else{
@@ -30,8 +31,14 @@ public class ComputerPlayer extends Player{
                     pass = true;
                 }
             }
-            for(int i = 0; i <= playerTrains.size(); i++){
-                //validMove = validMove();
+            else{
+                for(int j = 0; j <= playerTrains.size(); j++){
+                    validMove = validMove(domInd, j);
+                    if(validMove){ break; }
+                    hand.get(domInd).flip();
+                    validMove = validMove(domInd, j);
+                    if(validMove){ break; }
+                }
             }
         }
     }
