@@ -8,7 +8,7 @@ public abstract class Player{
     private int score;
     public boolean consoleGame;
     private final boolean isHuman;
-    private List<Domino> boneyard;
+    public List<Domino> boneyard;
     public List<Domino> mexicanTrain;
     public List<List<Domino>> playerTrains;
     public List<Integer> trainMarked;
@@ -77,6 +77,10 @@ public abstract class Player{
                     return false;
                 }
             }
+            if(trainMarked.get(trainInd) == 0 && trainInd != name){
+                if(isHuman){ unmarkedTrainError(); }
+                return false;
+            }
         }
         caboose = train.get(train.size()-1);
         if(!caboose.isDouble() && trainMarked.get(0) == 1){
@@ -96,10 +100,18 @@ public abstract class Player{
         if(mexicanTrain.get(mexicanTrain.size()-1).isDouble()){
             trainMarked.set(0, 1);
         }
-        for(List<Domino> d : playerTrains){
-            if(d.size() != 0){
-                if(d.get(d.size()-1).isDouble()){ trainMarked.set(0, 1); }
+        for(List<Domino> pTrain : playerTrains){
+            if(pTrain.size() != 0){
+                if(pTrain.get(pTrain.size()-1).isDouble()){
+                    trainMarked.set(0, 1);
+                }
             }
+        }
+    }
+
+    private void unmarkedTrainError(){
+        if(consoleGame){
+            System.out.println("This player's train isn't marked!");
         }
     }
 

@@ -29,7 +29,7 @@ public class HumanPlayer extends Player{
                 if(!turnOver){ System.out.println("Invalid move! Try again!");}
             }
             else if(input.equals("d")){
-                if(!pulled){
+                if(!pulled && boneyard.size() > 0){
                     pullFromBoneyard();
                     pulled = true;
                 }

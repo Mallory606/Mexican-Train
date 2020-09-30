@@ -9,6 +9,7 @@ public class ComputerPlayer extends Player{
         boolean pulled = false;
         boolean pass = false;
         Integer domInd;
+        Domino dom;
         PriorityQueue<Integer> moveQueue = new PriorityQueue<>((o1, o2) -> {
             Domino dom1 = hand.get(o1);
             Domino dom2 = hand.get(o2);
@@ -22,7 +23,7 @@ public class ComputerPlayer extends Player{
         while(!validMove && !pass){
             domInd = moveQueue.poll();
             if(domInd == null){
-                if(!pulled){
+                if(!pulled && boneyard.size() > 0){
                     pullFromBoneyard();
                     moveQueue.add(hand.size()-1);
                     pulled = true;
@@ -34,11 +35,20 @@ public class ComputerPlayer extends Player{
             }
             else{
                 for(int j = 0; j <= playerTrains.size(); j++){
+                    dom = hand.get(domInd);
                     validMove = validMove(domInd, j);
-                    if(validMove){ break; }
+                    checkOpenDouble();
+                    if(validMove){
+                        if(dom.isDouble()){ makeMove(); }
+                        break;
+                    }
                     hand.get(domInd).flip();
                     validMove = validMove(domInd, j);
-                    if(validMove){ break; }
+                    checkOpenDouble();
+                    if(validMove){
+                        if(dom.isDouble()){ makeMove(); }
+                        break;
+                    }
                 }
             }
         }

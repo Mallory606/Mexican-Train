@@ -16,10 +16,12 @@ public class MexicanTrainManager{
     private int numPlayers;
     private int currPlayer;
     private int round;
+    private int numSkips;
 
     public MexicanTrainManager(boolean console){
         consoleGame = console;
         round = 9;
+        numSkips = 0;
         initializeBoneyard(round);
         if(consoleGame){
             try{ consoleGame(); }
@@ -125,8 +127,9 @@ public class MexicanTrainManager{
 
     private boolean roundOver(){
         String winner;
+        if(boneyard.size() == 0){ numSkips++; }
         for(Player p : players){
-            if(p.handEmpty()){
+            if(p.handEmpty() || numSkips == numPlayers){
                 winner = tallyScores();
                 if(consoleGame){
                     System.out.println("Round over!");
