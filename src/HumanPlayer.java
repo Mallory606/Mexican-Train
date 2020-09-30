@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class HumanPlayer extends Player{
-    public HumanPlayer(int n, boolean console){ super(n, console); }
+    public HumanPlayer(int n, boolean console){ super(n, console, 1); }
 
     @Override
     public void makeMove(){

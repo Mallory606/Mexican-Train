@@ -7,16 +7,18 @@ public abstract class Player{
     public List<Domino> hand;
     private int score;
     public boolean consoleGame;
+    private final int isHuman;
     private List<Domino> boneyard;
     public List<Domino> mexicanTrain;
     public List<List<Domino>> playerTrains;
     public List<Integer> trainMarked;
 
-    public Player(int n, boolean console){
+    public Player(int n, boolean console, int human){
         name = n;
         consoleGame = console;
         hand = new ArrayList<>();
         score = 0;
+        isHuman = human;
     }
 
     public abstract void makeMove();
@@ -71,14 +73,14 @@ public abstract class Player{
                     return true;
                 }
                 else{
-                    startTrainError();
+                    if(isHuman == 1){ startTrainError(); }
                     return false;
                 }
             }
         }
         caboose = train.get(train.size()-1);
         if(!caboose.isDouble() && trainMarked.get(0) == 1){
-            openDoubleError();
+            if(isHuman == 1){ openDoubleError(); }
             return false;
         }
         if(domino.getLeft() == caboose.getRight()){
