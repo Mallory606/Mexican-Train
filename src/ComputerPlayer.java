@@ -1,7 +1,7 @@
 import java.util.PriorityQueue;
 
 public class ComputerPlayer extends Player{
-    public ComputerPlayer(int n, boolean console){ super(n, console, 0); }
+    public ComputerPlayer(int n, boolean console){ super(n, console, false); }
 
     @Override
     public void makeMove(){
@@ -12,11 +12,12 @@ public class ComputerPlayer extends Player{
         PriorityQueue<Integer> moveQueue = new PriorityQueue<>((o1, o2) -> {
             Domino dom1 = hand.get(o1);
             Domino dom2 = hand.get(o2);
-            if(dom1.isDouble() && !dom2.isDouble()){ return 1; }
-            else if(dom2.isDouble() && !dom1.isDouble()){ return -1; }
-            else{ return dom1.getScoreTotal() - dom2.getScoreTotal(); }
+            if(dom1.isDouble() && !dom2.isDouble()){ return -1; }
+            else if(dom2.isDouble() && !dom1.isDouble()){ return 1; }
+            else{ return dom2.getScoreTotal() - dom1.getScoreTotal(); }
         });
 
+        System.out.println(getHand());
         for(int i = 0; i < hand.size(); i++){ moveQueue.add(i); }
         while(!validMove && !pass){
             domInd = moveQueue.poll();
