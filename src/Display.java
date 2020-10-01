@@ -1,5 +1,6 @@
 import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -11,21 +12,32 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 
 public class Display extends javafx.application.Application{
+    private Stage setPlayers;
     private ChoiceBox<Integer> numCompsBox;
     private MexicanTrainManager manager;
+    private Integer numPlayers;
+    private Integer numComps;
+    private List<Domino> boneyard;
+    private List<Player> players;
+    private List<Domino> mexicanTrain;
+    private List<List<Domino>> playerTrains;
+    private List<Integer> trainMarked;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("Mexican Train");
 
-        Stage setPlayers = new Stage();
+        setPlayers = new Stage();
         setPlayers.initModality(Modality.APPLICATION_MODAL);
         setPlayers.initOwner(primaryStage);
         setPlayers.setAlwaysOnTop(true);
         setPlayers.setTitle("Select Number of Players");
         VBox setPlayersLists = new VBox(10);
+        setPlayersLists.setAlignment(Pos.CENTER);
         HBox numPlayersHBox = new HBox(5);
         Label numPlayersLabel = new Label("Number of Players:");
         Integer[] numPlayersList = {2, 3, 4};
@@ -46,24 +58,25 @@ public class Display extends javafx.application.Application{
         });
         Button start = new Button("Start");
         start.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            Integer numPlayers = numPlayersBox.getValue();
-            Integer numComps = numCompsBox.getValue();
+            numPlayers = numPlayersBox.getValue();
+            numComps = numCompsBox.getValue();
             if(numPlayers != null && numComps != null){
                 manager = new MexicanTrainManager(false);
+                setPlayers.close();
             }
         });
-        setPlayersLists.getChildren().addAll(numPlayersHBox, numCompsHBox);
+        setPlayersLists.getChildren().addAll(numPlayersHBox,numCompsHBox,start);
         Scene setPlayersScene = new Scene(setPlayersLists, 200, 115);
         setPlayers.setScene(setPlayersScene);
         setPlayers.show();
 
 
-
+        initializeGame();
 
 
         BorderPane border = new BorderPane();
 
-        Scene scene = new Scene(border, 1000, 1000);
+        Scene scene = new Scene(border, 1000, 500);
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -85,4 +98,15 @@ public class Display extends javafx.application.Application{
      * Returns nothing                                                        *
      *************************************************************************/
     public void startWindow(String[] args){ launch(args); }
+
+    private void initializeGame(){
+        manager.setNumPlayers(numPlayers);
+        manager.initializePlayers(numComps);
+        manager.setCurrPlayer(0);
+        boneyard = manager.getBoneyard();
+        players = manager.getPlayers();
+        mexicanTrain = manager.getMexicanTrain();
+        playerTrains = manager.getPlayerTrains();
+        trainMarked = manager.getTrainMarked();
+    }
 }

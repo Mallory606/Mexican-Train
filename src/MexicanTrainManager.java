@@ -42,7 +42,7 @@ public class MexicanTrainManager{
         }
     }
 
-    private void initializePlayers(int numComputers){
+    public void initializePlayers(int numComputers){
         int playerNumber = 1;
         players = new ArrayList<>();
         playerTrains = new ArrayList<>();
@@ -78,6 +78,22 @@ public class MexicanTrainManager{
         int rand = (int)(Math.random()*boneyard.size());
         return boneyard.remove(rand);
     }
+
+    public List<Domino> getBoneyard(){ return boneyard; }
+
+    public List<Player> getPlayers(){ return players; }
+
+    public List<Domino> getMexicanTrain(){ return mexicanTrain; }
+
+    public List<List<Domino>> getPlayerTrains(){ return playerTrains; }
+
+    public List<Integer> getTrainMarked(){ return trainMarked; }
+
+    public void setNumPlayers(int num){ numPlayers = num; }
+
+    public void setCurrPlayer(int curr) { currPlayer = curr; }
+
+    public int getCurrPlayer() { return currPlayer; }
 
     private void printGameState(){
         System.out.println("GameState:\n");
