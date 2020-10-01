@@ -2,6 +2,8 @@ import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -9,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -26,6 +29,7 @@ public class Display extends javafx.application.Application{
     private List<Domino> mexicanTrain;
     private List<List<Domino>> playerTrains;
     private List<Integer> trainMarked;
+    private Canvas gameBoard;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -72,6 +76,7 @@ public class Display extends javafx.application.Application{
 
 
         initializeGame();
+        gameBoard = new Canvas(800, 500);
 
 
         BorderPane border = new BorderPane();
@@ -108,5 +113,12 @@ public class Display extends javafx.application.Application{
         mexicanTrain = manager.getMexicanTrain();
         playerTrains = manager.getPlayerTrains();
         trainMarked = manager.getTrainMarked();
+    }
+
+    private void drawGameBoard(){
+        GraphicsContext gc = gameBoard.getGraphicsContext2D();
+        gc.setFill(Color.GREEN);
+        gc.fillRect(0, 0, 800, 500);
+        gc.setStroke(Color.BLACK);
     }
 }
