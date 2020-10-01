@@ -11,7 +11,7 @@ public class MexicanTrainManager{
     private List<Domino> mexicanTrain;
     private List<List<Domino>> playerTrains;
     private List<Integer> trainMarked;
-    private boolean consoleGame;
+    private final boolean consoleGame;
     private boolean gameRunning;
     private int numPlayers;
     private int currPlayer;
