@@ -141,5 +141,52 @@ public class Display extends javafx.application.Application{
         gc.strokeRoundRect(5, 420, 80, 80, 5, 5);
         gc.strokeText("Player", 18, 455, 70);
         gc.strokeText("Hand", 20, 475, 75);
+        drawDomino(new Domino(9, 8), gc, 200, 200);
+        drawDomino(new Domino(9, 9), gc, 300, 300);
+    }
+
+    //domino is 80x35, returns width of domino drawing
+    private int drawDomino(Domino dom, GraphicsContext gc, int x, int y){
+        gc.setFill(Color.IVORY);
+        if(dom.isDouble()){
+            gc.fillRoundRect(x, y, 35, 80, 15, 15);
+            gc.setFill(Color.BLACK);
+            gc.fillRoundRect(x+2, y+38, 32, 5, 15, 5);
+            drawDots(dom.getLeft(), gc, x, y+2);
+            drawDots(dom.getRight(), gc, x, y+45);
+            return 35;
+        }
+        else{
+            gc.fillRoundRect(x, y, 80, 35, 15, 15);
+            gc.setFill(Color.BLACK);
+            gc.fillRoundRect(x+38, y+2, 5, 32, 5, 15);
+            drawDots(dom.getLeft(), gc, x+2, y);
+            drawDots(dom.getRight(), gc, x+45, y);
+            return 80;
+        }
+    }
+
+    private void drawDots(int numDots, GraphicsContext gc, int x, int y){
+        if(numDots == 4 || numDots == 5 || numDots == 6 || numDots == 7
+                || numDots == 8 || numDots == 9){
+            gc.fillOval(x+5, y+5, 5, 5);
+            gc.fillOval(x+25, y+25, 5, 5);
+        }
+        if(numDots == 8 || numDots == 9){ gc.fillOval(x+15, y+5, 5, 5); }
+        if(numDots == 2 || numDots == 3 || numDots == 4 || numDots == 5 ||
+                numDots == 6 || numDots == 7 || numDots == 8 || numDots == 9){
+            gc.fillOval(x+25, y+5, 5, 5);
+            gc.fillOval(x+5, y+25, 5, 5);
+        }
+        if(numDots == 6 || numDots == 7 || numDots == 8 || numDots == 9){
+            gc.fillOval(x+5, y+15, 5, 5);
+        }
+        if(numDots==1 || numDots==3 || numDots==5 || numDots==7 || numDots==9){
+            gc.fillOval(x+15, y+15, 5, 5);
+        }
+        if(numDots == 6 || numDots == 7 || numDots == 8 || numDots == 9){
+            gc.fillOval(x+25, y+15, 5, 5);
+        }
+        if(numDots == 8 || numDots == 9){ gc.fillOval(x+15, y+25, 5, 5); }
     }
 }
