@@ -58,6 +58,8 @@ public abstract class Player{
         return handRep;
     }
 
+    public List<Domino> getHandGUI(){ return hand; }
+
     public boolean handEmpty(){ return hand.size() == 0; }
 
     public boolean validMove(int domInd, int trainInd){

@@ -7,6 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -77,13 +78,17 @@ public class Display extends javafx.application.Application{
         setPlayers.show();
 
 
-        gameBoard = new Canvas(800, 500);
+        gameBoard = new Canvas(1500, 500);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(gameBoard);
+        scrollPane.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
 
         BorderPane border = new BorderPane();
-        border.setCenter(gameBoard);
+        border.setCenter(scrollPane);
 
-        Scene scene = new Scene(border, 1000, 500);
+        Scene scene = new Scene(border, 1000, 520);
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -120,9 +125,12 @@ public class Display extends javafx.application.Application{
 
     private void drawGameBoard(){
         GraphicsContext gc = gameBoard.getGraphicsContext2D();
-        int tempY = 0;
+        List<Domino> tempTrain;
+        int tempX;
+        int tempY;
+        int addWidth;
         gc.setFill(Color.GREEN);
-        gc.fillRect(0, 0, 800, 500);   //each row = 80 tall, 20 for spacing (5 between)
+        gc.fillRect(0, 0, 1500, 500);   //each row = 80 tall, 20 for spacing (5 between)
         gc.setStroke(Color.BLACK);
         gc.setFill(Color.GOLD);
         gc.setFont(new Font(20));
@@ -130,19 +138,37 @@ public class Display extends javafx.application.Application{
         gc.strokeRoundRect(5, 5, 80, 80, 5, 5);
         gc.strokeText("Mexican", 10, 40, 70);
         gc.strokeText("Train", 23, 65, 70);
+        tempX = 95;
+        for(Domino d : mexicanTrain){
+            addWidth = drawDomino(d, gc, tempX, 5);
+            tempX += addWidth + 5;
+        }
+        tempY = 0;
         for(int i = 0; i < numPlayers; i++){
             tempY += 83;
+            gc.setFill(Color.GOLD);
             gc.fillRoundRect(5, tempY+5, 80, 80, 5, 5);
             gc.strokeRoundRect(5, tempY+5, 80, 80, 5, 5);
             gc.strokeText("Player", 18, tempY+40, 70);
             gc.strokeText(""+(i+1), 38, tempY+65, 70);
+            tempTrain = playerTrains.get(i);
+            tempX = 95;
+            for(Domino d : tempTrain){
+                addWidth = drawDomino(d, gc, tempX, tempY+5);
+                tempX += addWidth + 5;
+            }
         }
+        gc.setFill(Color.GOLD);
         gc.fillRoundRect(5, 420, 80, 80, 5, 5);
         gc.strokeRoundRect(5, 420, 80, 80, 5, 5);
         gc.strokeText("Player", 18, 455, 70);
         gc.strokeText("Hand", 20, 475, 75);
-        drawDomino(new Domino(9, 8), gc, 200, 200);
-        drawDomino(new Domino(9, 9), gc, 300, 300);
+        tempTrain = players.get(manager.getCurrPlayer()).getHandGUI();
+        tempX = 95;
+        for(Domino d : tempTrain){
+            addWidth = drawDomino(d, gc, tempX, 420);
+            tempX += addWidth + 5;
+        }
     }
 
     //domino is 80x35, returns width of domino drawing
@@ -157,11 +183,11 @@ public class Display extends javafx.application.Application{
             return 35;
         }
         else{
-            gc.fillRoundRect(x, y, 80, 35, 15, 15);
+            gc.fillRoundRect(x, y+20, 80, 35, 15, 15);
             gc.setFill(Color.BLACK);
-            gc.fillRoundRect(x+38, y+2, 5, 32, 5, 15);
-            drawDots(dom.getLeft(), gc, x+2, y);
-            drawDots(dom.getRight(), gc, x+45, y);
+            gc.fillRoundRect(x+38, y+22, 5, 32, 5, 15);
+            drawDots(dom.getLeft(), gc, x+2, y+20);
+            drawDots(dom.getRight(), gc, x+45, y+20);
             return 80;
         }
     }
