@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -66,6 +67,7 @@ public class Display extends javafx.application.Application{
             numComps = numCompsBox.getValue();
             if(numPlayers != null && numComps != null){
                 manager = new MexicanTrainManager(false);
+                initializeGame();
                 setPlayers.close();
             }
         });
@@ -75,11 +77,11 @@ public class Display extends javafx.application.Application{
         setPlayers.show();
 
 
-        initializeGame();
         gameBoard = new Canvas(800, 500);
 
 
         BorderPane border = new BorderPane();
+        border.setCenter(gameBoard);
 
         Scene scene = new Scene(border, 1000, 500);
         primaryStage.setScene(scene);
@@ -88,7 +90,7 @@ public class Display extends javafx.application.Application{
         AnimationTimer a = new AnimationTimer(){
             @Override
             public void handle(long now){
-
+                //drawGameBoard();
             }
         };
         a.start();
@@ -113,12 +115,31 @@ public class Display extends javafx.application.Application{
         mexicanTrain = manager.getMexicanTrain();
         playerTrains = manager.getPlayerTrains();
         trainMarked = manager.getTrainMarked();
+        drawGameBoard();
     }
 
     private void drawGameBoard(){
         GraphicsContext gc = gameBoard.getGraphicsContext2D();
+        int tempY = 0;
         gc.setFill(Color.GREEN);
-        gc.fillRect(0, 0, 800, 500);
+        gc.fillRect(0, 0, 800, 500);   //each row = 80 tall, 20 for spacing (5 between)
         gc.setStroke(Color.BLACK);
+        gc.setFill(Color.GOLD);
+        gc.setFont(new Font(20));
+        gc.fillRoundRect(5, 5, 80, 80, 5, 5);
+        gc.strokeRoundRect(5, 5, 80, 80, 5, 5);
+        gc.strokeText("Mexican", 10, 40, 70);
+        gc.strokeText("Train", 23, 65, 70);
+        for(int i = 0; i < numPlayers; i++){
+            tempY += 83;
+            gc.fillRoundRect(5, tempY+5, 80, 80, 5, 5);
+            gc.strokeRoundRect(5, tempY+5, 80, 80, 5, 5);
+            gc.strokeText("Player", 18, tempY+40, 70);
+            gc.strokeText(""+(i+1), 38, tempY+65, 70);
+        }
+        gc.fillRoundRect(5, 420, 80, 80, 5, 5);
+        gc.strokeRoundRect(5, 420, 80, 80, 5, 5);
+        gc.strokeText("Player", 18, 455, 70);
+        gc.strokeText("Hand", 20, 475, 75);
     }
 }

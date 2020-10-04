@@ -64,25 +64,25 @@ public abstract class Player{
         List<Domino> train;
         Domino domino = hand.get(domInd);
         Domino caboose;
-        if(trainInd == 0){ train = mexicanTrain; }
+        if(trainInd == 0){
+            train = mexicanTrain;
+            caboose = train.get(train.size()-1);
+        }
         else{
             train = playerTrains.get(trainInd-1);
             if(train.size() == 0){
-                if(trainInd == name){
-                    train.add(hand.remove(domInd));
-                    return true;
-                }
+                if(trainInd == name){ caboose = mexicanTrain.get(0); }
                 else{
                     if(isHuman){ startTrainError(); }
                     return false;
                 }
             }
+            else{ caboose = train.get(train.size()-1); }
             if(trainMarked.get(trainInd) == 0 && trainInd != name){
                 if(isHuman){ unmarkedTrainError(); }
                 return false;
             }
         }
-        caboose = train.get(train.size()-1);
         if(!caboose.isDouble() && trainMarked.get(0) == 1){
             if(isHuman){ openDoubleError(); }
             return false;
