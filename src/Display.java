@@ -38,13 +38,19 @@ public class Display extends javafx.application.Application{
     private List<List<Domino>> playerTrains;
     private List<Integer> trainMarked;
     private Canvas gameBoard;
-    private boolean gameRunning = false;
-    private boolean newTurn = true;
-    private boolean turnPassed = false;
+    private boolean gameRunning;
+    private boolean newTurn;
+    private boolean turnPassed;
+    private boolean moveMade;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("Mexican Train");
+
+        gameRunning = false;
+        newTurn = true;
+        turnPassed = false;
+        moveMade = false;
 
         setPlayers = new Stage();
         setPlayers.initModality(Modality.APPLICATION_MODAL);
@@ -124,6 +130,62 @@ public class Display extends javafx.application.Application{
                 players.get(manager.getCurrPlayer()).getDomino(currDom).flip();
             }
         });
+        drawBone.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            Player currPlayer = players.get(manager.getCurrPlayer());
+            if(turnPassed){ moveMade = true; }
+            else{ currPlayer.pullFromBoneyard(); }
+        });
+        playDom.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            Integer currDom = dominoChoice.getValue();
+            String train = trainChoice.getValue();
+            HumanPlayer currPlayer = (HumanPlayer)players
+                    .get(manager.getCurrPlayer());
+            boolean playDouble;
+            if(currDom != null && train != null){
+                currPlayer.setDominoInd(currDom-1);
+                switch(train){
+                    case "Mexican":
+                        currPlayer.setTrainInd(0);
+                        break;
+                    case "Player 1":
+                        currPlayer.setTrainInd(1);
+                        break;
+                    case "Player 2":
+                        currPlayer.setTrainInd(2);
+                        break;
+                    case "Player 3":
+                        currPlayer.setTrainInd(3);
+                        break;
+                    default:
+                        currPlayer.setTrainInd(4);
+                        break;
+                }
+                playDouble = currPlayer.getDomino(currDom-1).isDouble();
+                currPlayer.makeMove();
+                if(!currPlayer.getMoveError().equals("")){
+                    Stage errorMessage = new Stage();
+                    errorMessage.initModality(Modality.APPLICATION_MODAL);
+                    errorMessage.initOwner(primaryStage);
+                    errorMessage.setAlwaysOnTop(true);
+                    errorMessage.setTitle("Move Error");
+                    VBox errorBox = new VBox(10);
+                    Label error = new Label(currPlayer.getMoveError());
+                    Button okay = new Button("Okay");
+                    okay.addEventHandler(MouseEvent.MOUSE_CLICKED, event1 ->{
+                        errorMessage.close();
+                    });
+                    errorBox.getChildren().addAll(error, okay);
+                    errorBox.setAlignment(Pos.CENTER);
+                    Scene errorScene = new Scene(errorBox, 200, 100);
+                    errorMessage.setScene(errorScene);
+                    errorMessage.show();
+                }
+                else if(!playDouble){
+                    newTurn = true;
+                    moveMade = true;
+                }
+            }
+        });
 
         BorderPane border = new BorderPane();
         border.setCenter(scrollPane);
@@ -136,7 +198,14 @@ public class Display extends javafx.application.Application{
         AnimationTimer a = new AnimationTimer(){
             @Override
             public void handle(long now){
-                if(gameRunning){ updateGameState(); }
+                if(gameRunning){
+                    updateGameState();
+                    if(moveMade){
+                        gameRunning = manager.guiGame();
+                        newTurn = true;
+                        moveMade = false;
+                    }
+                }
             }
         };
         a.start();
@@ -215,6 +284,11 @@ public class Display extends javafx.application.Application{
             gc.strokeRoundRect(5, tempY+5, 80, 80, 5, 5);
             gc.strokeText("Player", 18, tempY+40, 70);
             gc.strokeText(""+(i+1), 38, tempY+65, 70);
+            if(trainMarked.get(i+1) == 1){
+                gc.setFill(Color.FIREBRICK);
+                gc.fillOval(60, tempY+60, 10, 10);
+                gc.strokeOval(60, tempY+60, 10, 10);
+            }
             tempTrain = playerTrains.get(i);
             tempX = 95;
             for(Domino d : tempTrain){

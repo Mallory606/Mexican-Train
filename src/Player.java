@@ -8,6 +8,7 @@ public abstract class Player{
     private int score;
     public boolean consoleGame;
     private final boolean isHuman;
+    private String moveError;
     public List<Domino> boneyard;
     public List<Domino> mexicanTrain;
     public List<List<Domino>> playerTrains;
@@ -19,6 +20,7 @@ public abstract class Player{
         hand = new ArrayList<>();
         score = 0;
         isHuman = human;
+        moveError = "";
     }
 
     public abstract void makeMove();
@@ -67,6 +69,12 @@ public abstract class Player{
     public Domino getDomino(int i){ return hand.get(i); }
 
     public boolean handEmpty(){ return hand.size() == 0; }
+
+    public String getMoveError(){ return moveError; }
+
+    public void setMoveError(String err){ moveError = err; }
+
+    public void resetMoveError(){ moveError = ""; }
 
     public boolean validMove(int domInd, int trainInd){
         List<Domino> train;
@@ -121,6 +129,7 @@ public abstract class Player{
         if(consoleGame){
             System.out.println("This player's train isn't marked!");
         }
+        else{ moveError = "This player's train isn't marked!"; }
     }
 
     private void openDoubleError(){
@@ -128,11 +137,14 @@ public abstract class Player{
             System.out.println("You have to handle the open double before " +
                     "you can play here.");
         }
+        else{ moveError = "You have to handle the open double before you can" +
+                " play here."; }
     }
 
     private void startTrainError(){
         if(consoleGame){
             System.out.println("You can't start another player's train!");
         }
+        else{ moveError = "You can't start another player's train!"; }
     }
 }

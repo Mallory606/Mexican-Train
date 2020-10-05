@@ -3,13 +3,30 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class HumanPlayer extends Player{
-    public HumanPlayer(int n, boolean console){ super(n, console, true); }
+    private int dominoInd;
+    private int trainInd;
+
+    public HumanPlayer(int n, boolean console){
+        super(n, console, true);
+        dominoInd = -1;
+        trainInd = -1;
+    }
+
+    public void setDominoInd(int dom){ dominoInd = dom; }
+
+    public void setTrainInd(int train){ trainInd = train; }
 
     @Override
     public void makeMove(){
+        boolean moveMade;
         if(consoleGame){
             try { makeMoveConsole(); }
             catch(IOException e){ e.printStackTrace(); }
+        }
+        else{
+            resetMoveError();
+            moveMade = validMove(dominoInd, trainInd);
+            if(!moveMade){ setMoveError("Invalid move! Try again!"); }
         }
     }
 
