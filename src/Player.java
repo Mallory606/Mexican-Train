@@ -35,6 +35,8 @@ public abstract class Player{
 
     public void newHand(){ hand = new ArrayList<>(); }
 
+    public int getName(){ return name; }
+
     public int getScore(){ return score; }
 
     public void updateScore(){
@@ -59,6 +61,8 @@ public abstract class Player{
     }
 
     public List<Domino> getHandGUI(){ return hand; }
+
+    public Domino getDomino(int i){ return hand.get(i); }
 
     public boolean handEmpty(){ return hand.size() == 0; }
 

@@ -27,6 +27,8 @@ public class Display extends javafx.application.Application{
     private Label turnLabel;
     private Label scoreLabel;
     private Label boneyardLabel;
+    private ChoiceBox<Integer> dominoChoice;
+    private ChoiceBox<String> trainChoice;
     private Integer numPlayers;
     private Integer numComps;
     private List<Domino> boneyard;
@@ -36,6 +38,7 @@ public class Display extends javafx.application.Application{
     private List<Integer> trainMarked;
     private Canvas gameBoard;
     private boolean gameRunning = false;
+    private boolean newTurn = true;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -97,12 +100,12 @@ public class Display extends javafx.application.Application{
         Label playLabel = new Label("Play a Domino:");
         HBox dominoBox = new HBox(10);
         Label dominoLabel = new Label("Pick Domino:");
-        ChoiceBox<Integer> dominoChoice = new ChoiceBox<>();
+        dominoChoice = new ChoiceBox<>();
         dominoBox.getChildren().addAll(dominoLabel, dominoChoice);
         dominoBox.setAlignment(Pos.CENTER);
         HBox trainBox = new HBox(10);
         Label trainLabel = new Label("Pick Train:");
-        ChoiceBox<Integer> trainChoice = new ChoiceBox<>();
+        trainChoice = new ChoiceBox<>();
         trainBox.getChildren().addAll(trainLabel, trainChoice);
         trainBox.setAlignment(Pos.CENTER);
         Button flip = new Button("Flip Domino");
@@ -111,6 +114,14 @@ public class Display extends javafx.application.Application{
         userInterface.getChildren().addAll(turnLabel, scoreLabel,boneyardLabel,
                 playLabel, dominoBox, trainBox, flip, drawBone, playDom);
         userInterface.setAlignment(Pos.TOP_CENTER);
+
+        flip.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            Integer currDom = dominoChoice.getValue();
+            if(currDom != null){
+                currDom -= 1;
+                players.get(manager.getCurrPlayer()).getDomino(currDom).flip();
+            }
+        });
 
         BorderPane border = new BorderPane();
         border.setCenter(scrollPane);
@@ -123,7 +134,7 @@ public class Display extends javafx.application.Application{
         AnimationTimer a = new AnimationTimer(){
             @Override
             public void handle(long now){
-                if(gameRunning){ drawGameBoard(); }
+                if(gameRunning){ updateGameState(); }
             }
         };
         a.start();
@@ -149,6 +160,27 @@ public class Display extends javafx.application.Application{
         playerTrains = manager.getPlayerTrains();
         trainMarked = manager.getTrainMarked();
         drawGameBoard();
+
+        String[] possTrains = new String[numPlayers+1];
+        possTrains[0] = "Mexican";
+        for(int i = 1; i <= numPlayers; i++){ possTrains[i] = "Player "+i; }
+        trainChoice.setItems(FXCollections.observableArrayList(possTrains));
+    }
+
+    private void updateGameState(){
+        Player currPlayer = players.get(manager.getCurrPlayer());
+        drawGameBoard();
+        turnLabel.setText("   Player "+currPlayer.getName()+"'s Turn!   ");
+        scoreLabel.setText("Score: " + currPlayer.getScore());
+        boneyardLabel.setText(boneyard.size() + " left in Boneyard");
+
+        if(newTurn){
+            List<Domino> currHand = currPlayer.getHandGUI();
+            Integer[] possDoms = new Integer[currHand.size()];
+            for(int i = 0; i < currHand.size(); i++){ possDoms[i] = i + 1; }
+            dominoChoice.setItems(FXCollections.observableArrayList(possDoms));
+            newTurn = false;
+        }
     }
 
     private void drawGameBoard(){
