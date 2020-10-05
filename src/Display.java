@@ -24,6 +24,9 @@ public class Display extends javafx.application.Application{
     private Stage setPlayers;
     private ChoiceBox<Integer> numCompsBox;
     private MexicanTrainManager manager;
+    private Label turnLabel;
+    private Label scoreLabel;
+    private Label boneyardLabel;
     private Integer numPlayers;
     private Integer numComps;
     private List<Domino> boneyard;
@@ -32,6 +35,7 @@ public class Display extends javafx.application.Application{
     private List<List<Domino>> playerTrains;
     private List<Integer> trainMarked;
     private Canvas gameBoard;
+    private boolean gameRunning = false;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -69,6 +73,7 @@ public class Display extends javafx.application.Application{
             if(numPlayers != null && numComps != null){
                 manager = new MexicanTrainManager(false);
                 initializeGame();
+                gameRunning = true;
                 setPlayers.close();
             }
         });
@@ -84,9 +89,32 @@ public class Display extends javafx.application.Application{
         scrollPane.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
+        VBox userInterface = new VBox(10);
+        turnLabel = new Label("   Player 1's Turn!   ");
+        turnLabel.setFont(new Font(20));
+        scoreLabel = new Label("Score: ");
+        boneyardLabel = new Label(" left in Boneyard");
+        Label playLabel = new Label("Play a Domino:");
+        HBox dominoBox = new HBox(10);
+        Label dominoLabel = new Label("Pick Domino:");
+        ChoiceBox<Integer> dominoChoice = new ChoiceBox<>();
+        dominoBox.getChildren().addAll(dominoLabel, dominoChoice);
+        dominoBox.setAlignment(Pos.CENTER);
+        HBox trainBox = new HBox(10);
+        Label trainLabel = new Label("Pick Train:");
+        ChoiceBox<Integer> trainChoice = new ChoiceBox<>();
+        trainBox.getChildren().addAll(trainLabel, trainChoice);
+        trainBox.setAlignment(Pos.CENTER);
+        Button flip = new Button("Flip Domino");
+        Button drawBone = new Button("Draw from Boneyard");
+        Button playDom = new Button("Play Domino");
+        userInterface.getChildren().addAll(turnLabel, scoreLabel,boneyardLabel,
+                playLabel, dominoBox, trainBox, flip, drawBone, playDom);
+        userInterface.setAlignment(Pos.TOP_CENTER);
 
         BorderPane border = new BorderPane();
         border.setCenter(scrollPane);
+        border.setRight(userInterface);
 
         Scene scene = new Scene(border, 1000, 520);
         primaryStage.setScene(scene);
@@ -95,7 +123,7 @@ public class Display extends javafx.application.Application{
         AnimationTimer a = new AnimationTimer(){
             @Override
             public void handle(long now){
-                //drawGameBoard();
+                if(gameRunning){ drawGameBoard(); }
             }
         };
         a.start();
