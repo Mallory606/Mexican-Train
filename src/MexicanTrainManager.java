@@ -212,4 +212,19 @@ public class MexicanTrainManager{
         }
         System.out.println("GAME OVER");
     }
+
+    public boolean guiGame(){
+        if(currPlayer == numPlayers-1){ currPlayer = 0; }
+        else{ currPlayer++; }
+        while(!(players.get(currPlayer).isHuman())){
+            players.get(currPlayer).makeMove();
+            if(currPlayer == numPlayers-1){ currPlayer = 0; }
+            else{ currPlayer++; }
+        }
+        if(roundOver()){
+            if(round == 0){ return false; }
+            else{ newRound(); }
+        }
+        return true;
+    }
 }

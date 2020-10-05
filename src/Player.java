@@ -45,6 +45,8 @@ public abstract class Player{
         score += update;
     }
 
+    public boolean isHuman() { return isHuman; }
+
     public void pullFromBoneyard(){
         int rand = (int)(Math.random()*boneyard.size());
         hand.add(boneyard.remove(rand));

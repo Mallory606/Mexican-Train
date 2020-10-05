@@ -29,6 +29,7 @@ public class Display extends javafx.application.Application{
     private Label boneyardLabel;
     private ChoiceBox<Integer> dominoChoice;
     private ChoiceBox<String> trainChoice;
+    private Button drawBone;
     private Integer numPlayers;
     private Integer numComps;
     private List<Domino> boneyard;
@@ -39,6 +40,7 @@ public class Display extends javafx.application.Application{
     private Canvas gameBoard;
     private boolean gameRunning = false;
     private boolean newTurn = true;
+    private boolean turnPassed = false;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -109,7 +111,7 @@ public class Display extends javafx.application.Application{
         trainBox.getChildren().addAll(trainLabel, trainChoice);
         trainBox.setAlignment(Pos.CENTER);
         Button flip = new Button("Flip Domino");
-        Button drawBone = new Button("Draw from Boneyard");
+        drawBone = new Button("Draw from Boneyard");
         Button playDom = new Button("Play Domino");
         userInterface.getChildren().addAll(turnLabel, scoreLabel,boneyardLabel,
                 playLabel, dominoBox, trainBox, flip, drawBone, playDom);
@@ -181,6 +183,8 @@ public class Display extends javafx.application.Application{
             dominoChoice.setItems(FXCollections.observableArrayList(possDoms));
             newTurn = false;
         }
+        if(turnPassed){ drawBone.setText("Pass"); }
+        else{ drawBone.setText("Draw from Boneyard"); }
     }
 
     private void drawGameBoard(){
