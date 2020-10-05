@@ -18,7 +18,7 @@ public class ComputerPlayer extends Player{
             else{ return dom2.getScoreTotal() - dom1.getScoreTotal(); }
         });
 
-        System.out.println(getHand());
+        //System.out.println(getHand());
         for(int i = 0; i < hand.size(); i++){ moveQueue.add(i); }
         while(!validMove && !pass){
             domInd = moveQueue.poll();

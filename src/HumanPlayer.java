@@ -26,6 +26,7 @@ public class HumanPlayer extends Player{
         else{
             resetMoveError();
             moveMade = validMove(dominoInd, trainInd);
+            checkOpenDouble();
             if(!moveMade){ setMoveError("Invalid move! Try again!"); }
         }
     }

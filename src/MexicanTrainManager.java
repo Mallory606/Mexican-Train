@@ -13,15 +13,18 @@ public class MexicanTrainManager{
     private List<Integer> trainMarked;
     private final boolean consoleGame;
     private boolean gameRunning;
+    private boolean newRound;
     private int numPlayers;
     private int currPlayer;
     private int round;
     private int numSkips;
+    private String currWinner;
 
     public MexicanTrainManager(boolean console){
         consoleGame = console;
         round = 9;
         numSkips = 0;
+        newRound = false;
         initializeBoneyard(round);
         if(consoleGame){
             try{ consoleGame(); }
@@ -95,6 +98,12 @@ public class MexicanTrainManager{
 
     public int getCurrPlayer() { return currPlayer; }
 
+    public boolean isNewRound(){ return newRound; }
+
+    public void resetNewRound(){ newRound = false; }
+
+    public String getCurrWinner(){ return currWinner; }
+
     private void printGameState(){
         System.out.println("GameState:\n");
         for(int i = 0; i < numPlayers; i++){
@@ -152,6 +161,7 @@ public class MexicanTrainManager{
                     if(round == 0){ System.out.println(winner + " wins!"); }
                     else{ System.out.println(winner + " is in the lead!"); }
                 }
+                else{ currWinner = winner; }
                 return true;
             }
         }
@@ -223,7 +233,10 @@ public class MexicanTrainManager{
         }
         if(roundOver()){
             if(round == 0){ return false; }
-            else{ newRound(); }
+            else{
+                newRound = true;
+                newRound();
+            }
         }
         return true;
     }

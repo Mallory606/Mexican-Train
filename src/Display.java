@@ -94,7 +94,7 @@ public class Display extends javafx.application.Application{
         setPlayers.show();
 
 
-        gameBoard = new Canvas(1500, 500);
+        gameBoard = new Canvas(2500, 500);
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(gameBoard);
         scrollPane.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -132,8 +132,16 @@ public class Display extends javafx.application.Application{
         });
         drawBone.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Player currPlayer = players.get(manager.getCurrPlayer());
-            if(turnPassed){ moveMade = true; }
-            else{ currPlayer.pullFromBoneyard(); }
+            if(turnPassed){
+                trainMarked.set(manager.getCurrPlayer()+1, 1);
+                turnPassed = false;
+                moveMade = true;
+            }
+            else{
+                currPlayer.pullFromBoneyard();
+                newTurn = true;
+                turnPassed = true;
+            }
         });
         playDom.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Integer currDom = dominoChoice.getValue();
@@ -176,7 +184,7 @@ public class Display extends javafx.application.Application{
                     });
                     errorBox.getChildren().addAll(error, okay);
                     errorBox.setAlignment(Pos.CENTER);
-                    Scene errorScene = new Scene(errorBox, 200, 100);
+                    Scene errorScene = new Scene(errorBox, 250, 100);
                     errorMessage.setScene(errorScene);
                     errorMessage.show();
                 }
@@ -202,6 +210,27 @@ public class Display extends javafx.application.Application{
                     updateGameState();
                     if(moveMade){
                         gameRunning = manager.guiGame();
+                        updateGameState();
+                        if(manager.isNewRound()){
+                            initializeRound();
+                            Stage newRound = new Stage();
+                            newRound.initModality(Modality.APPLICATION_MODAL);
+                            newRound.initOwner(primaryStage);
+                            newRound.setAlwaysOnTop(true);
+                            newRound.setTitle("New Round");
+                            VBox newRoundBox = new VBox(10);
+                            Label roundLabel = new Label("New Round! Player "
+                                    +manager.getCurrWinner() + " is winning!");
+                            Button okay = new Button("Okay");
+                            okay.addEventHandler(MouseEvent.MOUSE_CLICKED, event1 ->{
+                                newRound.close();
+                            });
+                            newRoundBox.getChildren().addAll(roundLabel, okay);
+                            newRoundBox.setAlignment(Pos.CENTER);
+                            Scene roundScene = new Scene(newRoundBox, 200, 100);
+                            newRound.setScene(roundScene);
+                            newRound.show();
+                        }
                         newTurn = true;
                         moveMade = false;
                     }
@@ -224,6 +253,15 @@ public class Display extends javafx.application.Application{
     private void initializeGame(){
         manager.setNumPlayers(numPlayers);
         manager.initializePlayers(numComps);
+        initializeRound();
+
+        String[] possTrains = new String[numPlayers+1];
+        possTrains[0] = "Mexican";
+        for(int i = 1; i <= numPlayers; i++){ possTrains[i] = "Player "+i; }
+        trainChoice.setItems(FXCollections.observableArrayList(possTrains));
+    }
+
+    private void initializeRound(){
         manager.setCurrPlayer(0);
         boneyard = manager.getBoneyard();
         players = manager.getPlayers();
@@ -231,11 +269,7 @@ public class Display extends javafx.application.Application{
         playerTrains = manager.getPlayerTrains();
         trainMarked = manager.getTrainMarked();
         drawGameBoard();
-
-        String[] possTrains = new String[numPlayers+1];
-        possTrains[0] = "Mexican";
-        for(int i = 1; i <= numPlayers; i++){ possTrains[i] = "Player "+i; }
-        trainChoice.setItems(FXCollections.observableArrayList(possTrains));
+        manager.resetNewRound();
     }
 
     private void updateGameState(){
@@ -263,7 +297,7 @@ public class Display extends javafx.application.Application{
         int tempY;
         int addWidth;
         gc.setFill(Color.GREEN);
-        gc.fillRect(0, 0, 1500, 500);   //each row = 80 tall, 20 for spacing (5 between)
+        gc.fillRect(0, 0, 2500, 500);   //each row = 80 tall, 20 for spacing (5 between)
         gc.setStroke(Color.BLACK);
         gc.setFill(Color.GOLD);
         gc.setFont(new Font(20));
@@ -306,6 +340,14 @@ public class Display extends javafx.application.Application{
         for(Domino d : tempTrain){
             addWidth = drawDomino(d, gc, tempX, 420);
             tempX += addWidth + 5;
+        }
+
+        if(!gameRunning){
+            gc.setFill(Color.WHITE);
+            gc.fillRect(200, 200, 200, 200);
+            gc.strokeRect(200, 200, 200, 200);
+            gc.strokeText("GAME OVER\nPlayer "+
+                    manager.getCurrWinner()+" wins!", 200, 200);
         }
     }
 
