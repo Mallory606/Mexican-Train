@@ -138,7 +138,7 @@ public class Display extends javafx.application.Application{
                 moveMade = true;
             }
             else{
-                currPlayer.pullFromBoneyard();
+                if(boneyard.size() > 0){ currPlayer.pullFromBoneyard(); }
                 newTurn = true;
                 turnPassed = true;
             }
@@ -189,8 +189,13 @@ public class Display extends javafx.application.Application{
                     errorMessage.show();
                 }
                 else if(!playDouble){
+                    turnPassed = false;
                     newTurn = true;
                     moveMade = true;
+                }
+                else{
+                    newTurn = true;
+                    turnPassed = false;
                 }
             }
         });
@@ -219,7 +224,7 @@ public class Display extends javafx.application.Application{
                             newRound.setAlwaysOnTop(true);
                             newRound.setTitle("New Round");
                             VBox newRoundBox = new VBox(10);
-                            Label roundLabel = new Label("New Round! Player "
+                            Label roundLabel = new Label("New Round! "
                                     +manager.getCurrWinner() + " is winning!");
                             Button okay = new Button("Okay");
                             okay.addEventHandler(MouseEvent.MOUSE_CLICKED, event1 ->{
