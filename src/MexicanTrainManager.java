@@ -12,7 +12,6 @@ public class MexicanTrainManager{
     private List<List<Domino>> playerTrains;
     private List<Integer> trainMarked;
     private final boolean consoleGame;
-    private boolean gameRunning;
     private boolean newRound;
     private int numPlayers;
     private int currPlayer;
@@ -207,7 +206,7 @@ public class MexicanTrainManager{
             System.out.println("Player "+(i+1)+": "+players.get(i).getHand());
         }*/
         currPlayer = 0;
-        gameRunning = true;
+        boolean gameRunning = true;
         while(gameRunning){
             printGameState();
             System.out.println("It's " + players.get(currPlayer).toString()

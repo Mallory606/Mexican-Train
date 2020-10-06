@@ -179,9 +179,8 @@ public class Display extends javafx.application.Application{
                     VBox errorBox = new VBox(10);
                     Label error = new Label(currPlayer.getMoveError());
                     Button okay = new Button("Okay");
-                    okay.addEventHandler(MouseEvent.MOUSE_CLICKED, event1 ->{
-                        errorMessage.close();
-                    });
+                    okay.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                            event1 -> errorMessage.close());
                     errorBox.getChildren().addAll(error, okay);
                     errorBox.setAlignment(Pos.CENTER);
                     Scene errorScene = new Scene(errorBox, 250, 100);
@@ -227,9 +226,8 @@ public class Display extends javafx.application.Application{
                             Label roundLabel = new Label("New Round! "
                                     +manager.getCurrWinner() + " is winning!");
                             Button okay = new Button("Okay");
-                            okay.addEventHandler(MouseEvent.MOUSE_CLICKED, event1 ->{
-                                newRound.close();
-                            });
+                            okay.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                                    event1 -> newRound.close());
                             newRoundBox.getChildren().addAll(roundLabel, okay);
                             newRoundBox.setAlignment(Pos.CENTER);
                             Scene roundScene = new Scene(newRoundBox, 200, 100);
