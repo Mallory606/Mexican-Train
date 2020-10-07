@@ -363,7 +363,10 @@ public class MexicanTrainManager{
         String winner = "";
         for(Player p : players){
             p.updateScore();
-            if(p.getScore() < min){ winner = p.toString(); }
+            if(p.getScore() < min){
+                winner = p.toString();
+                min = p.getScore();
+            }
         }
         return winner;
     }
