@@ -1,18 +1,17 @@
-import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Player{
-    public int name;
-    public List<Domino> hand;
+    private final int name;
+    private List<Domino> hand;
     private int score;
-    public boolean consoleGame;
+    private final boolean consoleGame;
     private final boolean isHuman;
     private String moveError;
-    public List<Domino> boneyard;
-    public List<Domino> mexicanTrain;
-    public List<List<Domino>> playerTrains;
-    public List<Integer> trainMarked;
+    private List<Domino> boneyard;
+    private List<Domino> mexicanTrain;
+    private List<List<Domino>> playerTrains;
+    private List<Integer> trainMarked;
 
     public Player(int n, boolean console, boolean human){
         name = n;
@@ -37,6 +36,10 @@ public abstract class Player{
 
     public void newHand(){ hand = new ArrayList<>(); }
 
+    public Domino fromHand(int i){ return hand.get(i); }
+
+    public int handSize(){ return hand.size(); }
+
     public int getName(){ return name; }
 
     public int getScore(){ return score; }
@@ -46,6 +49,8 @@ public abstract class Player{
         for(Domino d : hand){ update += d.getScoreTotal(); }
         score += update;
     }
+
+    public boolean isConsoleGame(){ return consoleGame; }
 
     public boolean isHuman() { return isHuman; }
 
@@ -75,6 +80,12 @@ public abstract class Player{
     public void setMoveError(String err){ moveError = err; }
 
     public void resetMoveError(){ moveError = ""; }
+
+    public int getBoneyardSize(){ return boneyard.size(); }
+
+    public int getPlayerTrainsSize(){ return playerTrains.size(); }
+
+    public void setTrainMarked(){ trainMarked.set(name, 1); }
 
     public boolean validMove(int domInd, int trainInd){
         List<Domino> train;

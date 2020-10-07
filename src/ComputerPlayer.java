@@ -11,38 +11,38 @@ public class ComputerPlayer extends Player{
         Integer domInd;
         Domino dom;
         PriorityQueue<Integer> moveQueue = new PriorityQueue<>((o1, o2) -> {
-            Domino dom1 = hand.get(o1);
-            Domino dom2 = hand.get(o2);
+            Domino dom1 = fromHand(o1);
+            Domino dom2 = fromHand(o2);
             if(dom1.isDouble() && !dom2.isDouble()){ return -1; }
             else if(dom2.isDouble() && !dom1.isDouble()){ return 1; }
             else{ return dom2.getScoreTotal() - dom1.getScoreTotal(); }
         });
 
         //System.out.println(getHand());
-        for(int i = 0; i < hand.size(); i++){ moveQueue.add(i); }
+        for(int i = 0; i < handSize(); i++){ moveQueue.add(i); }
         while(!validMove && !pass){
             domInd = moveQueue.poll();
             if(domInd == null){
-                if(!pulled && boneyard.size() > 0){
+                if(!pulled && getBoneyardSize() > 0){
                     pullFromBoneyard();
-                    moveQueue.add(hand.size()-1);
+                    moveQueue.add(handSize()-1);
                     pulled = true;
                 }
                 else{
-                    trainMarked.set(name, 1);
+                    setTrainMarked();
                     pass = true;
                 }
             }
             else{
-                for(int j = 0; j <= playerTrains.size(); j++){
-                    dom = hand.get(domInd);
+                for(int j = 0; j <= getPlayerTrainsSize(); j++){
+                    dom = fromHand(domInd);
                     validMove = validMove(domInd, j);
                     checkOpenDouble();
                     if(validMove){
                         if(dom.isDouble()){ makeMove(); }
                         break;
                     }
-                    hand.get(domInd).flip();
+                    fromHand(domInd).flip();
                     validMove = validMove(domInd, j);
                     checkOpenDouble();
                     if(validMove){

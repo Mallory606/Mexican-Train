@@ -19,7 +19,7 @@ public class HumanPlayer extends Player{
     @Override
     public void makeMove(){
         boolean moveMade;
-        if(consoleGame){
+        if(isConsoleGame()){
             try { makeMoveConsole(); }
             catch(IOException e){ e.printStackTrace(); }
         }
@@ -47,12 +47,12 @@ public class HumanPlayer extends Player{
                 if(!turnOver){ System.out.println("Invalid move! Try again!");}
             }
             else if(input.equals("d")){
-                if(!pulled && boneyard.size() > 0){
+                if(!pulled && getBoneyardSize() > 0){
                     pullFromBoneyard();
                     pulled = true;
                 }
                 else{
-                    trainMarked.set(name, 1);
+                    setTrainMarked();
                     turnOver = true;
                 }
             }
@@ -73,7 +73,7 @@ public class HumanPlayer extends Player{
             input = in.readLine();
             try {
                 numInput = Integer.parseInt(input);
-                if(numInput > -1 && numInput < hand.size()){
+                if(numInput > -1 && numInput < handSize()){
                     dominoInd = numInput;
                     validInput = true;
                 }
@@ -88,7 +88,7 @@ public class HumanPlayer extends Player{
                     "the domino? [y/n]");
             input = in.readLine();
             if(input.equals("y")){
-                hand.get(dominoInd).flip();
+                fromHand(dominoInd).flip();
                 validInput = true;
             }
             else if(input.equals("n")){ validInput = true; }
@@ -106,14 +106,9 @@ public class HumanPlayer extends Player{
             else{
                 try {
                     numInput = Integer.parseInt(input);
-                    if(numInput > 0 && numInput <= playerTrains.size()){
-                        if(trainMarked.get(numInput) == 1 || numInput == name){
-                            trainInd = numInput;
-                            validInput = true;
-                        }
-                        else{
-                            System.out.println("You can't play on that train!");
-                        }
+                    if(numInput > 0 && numInput <= getPlayerTrainsSize()){
+                        trainInd = numInput;
+                        validInput = true;
                     }
                     else{ System.out.println("Invalid input! Try Again!"); }
                 } catch (NumberFormatException e) {
@@ -121,7 +116,7 @@ public class HumanPlayer extends Player{
                 }
             }
         }
-        dom = hand.get(dominoInd);
+        dom = fromHand(dominoInd);
         moveMade = validMove(dominoInd, trainInd);
         checkOpenDouble();
         if(moveMade && dom.isDouble()){
