@@ -2,20 +2,63 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/******************************************************************************
+ * Ashley Krattiger                                                           *
+ *                                                                            *
+ * HumanPlayer                                                                *
+ *                                                                            *
+ * Extends Player. Handles move making for human users                        *
+ *****************************************************************************/
 public class HumanPlayer extends Player{
+    /**************************************************************************
+     * Global Variables:                                                      *
+     * dominoInd - index in hand of the domino the user wants to play         *
+     * trainInd - index of train that user wants to play on. 0 if Mexican     *
+     *            Train, any other value is int representation of Player whose*
+     *            train they want to play on                                  *
+     *************************************************************************/
     private int dominoInd;
     private int trainInd;
 
+    /**************************************************************************
+     * Player Constructor                                                     *
+     *                                                                        *
+     * Calls super(). Initializes global variables                            *
+     *                                                                        *
+     * Argument: n - the name of the Player                                   *
+     *           console - tells us if the game is a console game             *
+     *************************************************************************/
     public HumanPlayer(int n, boolean console){
         super(n, console, true);
         dominoInd = -1;
         trainInd = -1;
     }
 
+    /**************************************************************************
+     * setDominoInd                                                           *
+     *                                                                        *
+     * Setter. Sets dominoInd to argument dom. Returns nothing                *
+     *************************************************************************/
     public void setDominoInd(int dom){ dominoInd = dom; }
 
+    /**************************************************************************
+     * setTrainInd                                                            *
+     *                                                                        *
+     * Setter. Sets trainInd to argument train. Returns nothing               *
+     *************************************************************************/
     public void setTrainInd(int train){ trainInd = train; }
 
+    /**************************************************************************
+     * makeMove                                                               *
+     *                                                                        *
+     * Overridden method. Completes a turn for the Player                     *
+     *                                                                        *
+     * Takes no arguments, returns nothing                                    *
+     * Catches IOException                                                    *
+     *                                                                        *
+     * Variable:                                                              *
+     * moveMade - keeps track of whether proposed move in GUI game is valid   *
+     *************************************************************************/
     @Override
     public void makeMove(){
         boolean moveMade;
@@ -31,6 +74,20 @@ public class HumanPlayer extends Player{
         }
     }
 
+    /**************************************************************************
+     * makeMoveConsole                                                        *
+     *                                                                        *
+     * Takes input from user and prints out options for player on their move  *
+     *                                                                        *
+     * Takes no arguments, returns nothing                                    *
+     * Throws IOException                                                     *
+     *                                                                        *
+     * Variable:                                                              *
+     * in - BufferedReader which communicates with System.in                  *
+     * input - holds input read in from System.in                             *
+     * turnOver - keeps track of whether the user is done with their turn     *
+     * pulled - keeps track of whether the user has pulled from the boneyard  *
+     *************************************************************************/
     private void makeMoveConsole() throws IOException{
         BufferedReader in=new BufferedReader(new InputStreamReader(System.in));
         String input;
@@ -60,11 +117,27 @@ public class HumanPlayer extends Player{
         }
     }
 
+    /**************************************************************************
+     * playDomino                                                             *
+     *                                                                        *
+     * Takes input from user for which domino they want to play and attempts  *
+     * to make the move                                                       *
+     *                                                                        *
+     * Argument: in - BufferedReader that takes input from System.in          *
+     * Returns true if the user succeeded in making a move                    *
+     * Throws IOException                                                     *
+     *                                                                        *
+     * Variable:                                                              *
+     * input - holds input read in from System.in                             *
+     * numInput - holds numbers parsed from input                             *
+     * dom - Domino which the user wants to play. Held so method can check if *
+     *       a double Domino was successfully played                          *
+     * validInput - keeps track of whether the method has read in a valid move*
+     * moveMade - keeps track of whether the user's move was successfully made*
+     *************************************************************************/
     private boolean playDomino(BufferedReader in) throws IOException{
         String input;
         int numInput;
-        int dominoInd = 0;
-        int trainInd = -1;
         Domino dom;
         boolean validInput = false;
         boolean moveMade;

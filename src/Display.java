@@ -18,8 +18,47 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.util.List;
 
-
+/******************************************************************************
+ * Ashley Krattiger                                                           *
+ *                                                                            *
+ * Display                                                                    *
+ *                                                                            *
+ * Extends Application. Creates the window and runs the GUI game              *
+ *****************************************************************************/
 public class Display extends javafx.application.Application{
+    /**************************************************************************
+     * Global Variables:                                                      *
+     * setPlayers - pop up window that allows you to select the number of     *
+     *              players and computers                                     *
+     * numCompsBox - ChoiceBox used to select how many computers there are    *
+     * manager - MexicanTrainManager for the game                             *
+     * turnLabel - Label that describes whose turn it is                      *
+     * scoreLabel - Label that shows the current player's score               *
+     * boneyardLabel - Label that shows how many Dominos are left in boneyard *
+     * dominoChoice - ChoiceBox for choosing which Domino you want to play    *
+     * trainChoice - ChoiceBox for choosing which train you want to play on   *
+     * drawBone - Button that lets you draw a domino from the boneyard        *
+     * numPlayers - holds the total number of players in the game             *
+     * numComps - holds the number of ComputerPlayers in the game             *
+     * boneyard - List which holds all the Dominos in the boneyard            *
+     * players - List which holds all the Players in the game                 *
+     * mexicanTrain - List which holds all the Dominos played on the Mexican  *
+     *                Train                                                   *
+     * playerTrains - List which holds all the players' personal trains       *
+     * trainMarked - List which keeps track of whether a player's personal    *
+     *               train is marked. 0 indicates the train is not marked, 1  *
+     *               indicates that it is. The first integer(0) in the List is*
+     *               used to determine if there is an open double on the board*
+     *               The rest of the integers represent the personal train of *
+     *               the player with the same number as its position in this  *
+     *               List.                                                    *
+     * gameBoard - Canvas where the trains and the player's hand is drawn     *
+     * gameRunning - keeps track of whether the game is still being played    *
+     * newTurn - keeps track of whether dominoChoice needs to be updated,     *
+     *           which generally only happens when we switch to a new turn    *
+     * turnPassed - keeps track of whether the user passed this turn          *
+     * moveMade - keeps track of whether a move was successfully made         *
+     *************************************************************************/
     private Stage setPlayers;
     private ChoiceBox<Integer> numCompsBox;
     private MexicanTrainManager manager;
@@ -42,6 +81,42 @@ public class Display extends javafx.application.Application{
     private boolean turnPassed;
     private boolean moveMade;
 
+    /**************************************************************************
+     * start                                                                  *
+     *                                                                        *
+     * Overridden method. Initializes the GUI and runs the animationTimer     *
+     *                                                                        *
+     * Argument: primaryStage - primary Stage for the GUI                     *
+     * Returns nothing                                                        *
+     * Throws Exception                                                       *
+     *                                                                        *
+     * Variables:                                                             *
+     * setPlayersLists - VBox holding all nodes for the setPlayers Stage      *
+     * numPlayersHBox - holds nodes for selecting the number of players       *
+     * numPlayersLabel - label for selecting the number of players            *
+     * numPlayersList - array holding values for numPlayersBox ChoiceBox      *
+     * numPlayersBox - ChoiceBox for selecting number of players              *
+     * numCompsHBox - holds nodes for selecting the number of computers       *
+     * numCompsLabel - label for selecting the number of computers            *
+     * compsList - array holding values for numCompsBox ChoiceBox             *
+     * numCompsBox - ChoiceBox for selecting number of computers              *
+     * start - Button that starts the game with selected players              *
+     * setPlayersScene - Scene for setPlayers Stage                           *
+     * scrollPane - ScrollPane for the game board section of the GUI          *
+     * userInterface - holds the nodes for the section of the GUI where the   *
+     *                 player makes choices for the game                      *
+     * playLabel - Label that reads "Play a Domino:" for the UI               *
+     * dominoBox - HBox holding nodes for selecting a domino                  *
+     * dominoLabel - Label that reads "Pick Domino:" for the UI               *
+     * trainBox - HBox holding nodes for selecting a train                    *
+     * trainLabel - Label that reads "Pick Train:" for the UI                 *
+     * flip - Button that allows you to flip the selected Domino              *
+     * playDom - Button that allows you to play the selected Domino on the    *
+     *           selected train                                               *
+     * border - BorderPane for primaryStage                                   *
+     * scene - Scene for primaryStage                                         *
+     * a - AnimationTimer for the GUI                                         *
+     *************************************************************************/
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("Mexican Train");
@@ -70,11 +145,11 @@ public class Display extends javafx.application.Application{
         numCompsHBox.getChildren().addAll(numCompsLabel, numCompsBox);
         numPlayersBox.getSelectionModel().selectedIndexProperty()
                 .addListener((observable, oldValue, newValue) -> {
-            Integer[] numCompsList;
-            if((Integer)newValue == 0){ numCompsList = new Integer[]{0, 1}; }
-            else if((Integer)newValue == 1){ numCompsList=new Integer[]{0,1,2};}
-            else{ numCompsList = new Integer[]{0, 1, 2, 3}; }
-            numCompsBox.setItems(FXCollections.observableArrayList(numCompsList));
+            Integer[] compsList;
+            if((Integer)newValue == 0){ compsList = new Integer[]{0, 1}; }
+            else if((Integer)newValue == 1){ compsList=new Integer[]{0,1,2};}
+            else{ compsList = new Integer[]{0, 1, 2, 3}; }
+            numCompsBox.setItems(FXCollections.observableArrayList(compsList));
         });
         Button start = new Button("Start");
         start.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -96,8 +171,10 @@ public class Display extends javafx.application.Application{
         gameBoard = new Canvas(2500, 500);
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(gameBoard);
-        scrollPane.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scrollPane.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.hbarPolicyProperty()
+                .setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.vbarPolicyProperty()
+                .setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         VBox userInterface = new VBox(10);
         turnLabel = new Label("   Player 1's Turn!   ");
@@ -229,7 +306,7 @@ public class Display extends javafx.application.Application{
                                     event1 -> newRound.close());
                             newRoundBox.getChildren().addAll(roundLabel, okay);
                             newRoundBox.setAlignment(Pos.CENTER);
-                            Scene roundScene = new Scene(newRoundBox, 200, 100);
+                            Scene roundScene= new Scene(newRoundBox, 200, 100);
                             newRound.setScene(roundScene);
                             newRound.show();
                         }
@@ -252,6 +329,15 @@ public class Display extends javafx.application.Application{
      *************************************************************************/
     public void startWindow(String[] args){ launch(args); }
 
+    /**************************************************************************
+     * initializeGame                                                         *
+     *                                                                        *
+     * Sets up the values necessary to start the game                         *
+     * Takes no arguments, returns nothing                                    *
+     *                                                                        *
+     * Variable:                                                              *
+     * possTrains - String[] that holds names of all the trains in the game   *
+     *************************************************************************/
     private void initializeGame(){
         manager.setNumPlayers(numPlayers);
         manager.initializePlayers(numComps);
@@ -263,6 +349,12 @@ public class Display extends javafx.application.Application{
         trainChoice.setItems(FXCollections.observableArrayList(possTrains));
     }
 
+    /**************************************************************************
+     * initializeRound                                                        *
+     *                                                                        *
+     * Sets up fields for a new round of the game                             *
+     * Takes no arguments, returns nothing                                    *
+     *************************************************************************/
     private void initializeRound(){
         manager.setCurrPlayer(0);
         boneyard = manager.getBoneyard();
@@ -274,6 +366,16 @@ public class Display extends javafx.application.Application{
         manager.resetNewRound();
     }
 
+    /**************************************************************************
+     * updateGameState                                                        *
+     *                                                                        *
+     * Updates user interface for a new player's turn and redraws gameBoard   *
+     * Takes no arguments, returns nothing                                    *
+     *                                                                        *
+     * Variables:                                                             *
+     * currPlayer - holds the player whose turn it is                         *
+     * currHand - the hand of the currPlayer                                  *
+     *************************************************************************/
     private void updateGameState(){
         Player currPlayer = players.get(manager.getCurrPlayer());
         drawGameBoard();
@@ -292,6 +394,21 @@ public class Display extends javafx.application.Application{
         else{ drawBone.setText("Draw from Boneyard"); }
     }
 
+    /**************************************************************************
+     * drawGameBoard                                                          *
+     *                                                                        *
+     * Draws the background, labels, and trains on the game board             *
+     * Each row of trains is 80 tall with 5 between them                      *
+     * Takes no arguments, returns nothing                                    *
+     *                                                                        *
+     * Variables:                                                             *
+     * gc - GraphicsContext for Canvas gameBoard                              *
+     * tempTrain - holds the current train which needs to be drawn            *
+     * tempX - holds the temporary value of the x coordinate                  *
+     * tempY - holds the temporary value of the y coordinate                  *
+     * addWidth - the width of the last Domino that was drawn, used to move   *
+     *            tempX between drawing each domino                           *
+     *************************************************************************/
     private void drawGameBoard(){
         GraphicsContext gc = gameBoard.getGraphicsContext2D();
         List<Domino> tempTrain;
@@ -299,7 +416,7 @@ public class Display extends javafx.application.Application{
         int tempY;
         int addWidth;
         gc.setFill(Color.GREEN);
-        gc.fillRect(0, 0, 2500, 500);   //each row = 80 tall, 20 for spacing (5 between)
+        gc.fillRect(0, 0, 2500, 500);
         gc.setStroke(Color.BLACK);
         gc.setFill(Color.GOLD);
         gc.setFont(new Font(20));
@@ -353,7 +470,17 @@ public class Display extends javafx.application.Application{
         }
     }
 
-    //domino is 80x35, returns width of domino drawing
+    /**************************************************************************
+     * drawDomino                                                             *
+     *                                                                        *
+     * Draws a singular Domino at the given coordinates. Draws vertical if    *
+     * Domino is a double. Dimensions of Domino are 80x35 or 35x80            *
+     * Arguments: dom - Domino to be drawn                                    *
+     *            gc - GraphicsContext for Canvas GameBoard                   *
+     *            x - x coordinate                                            *
+     *            y - y coordinate                                            *
+     * Returns the width of the Domino                                        *
+     *************************************************************************/
     private int drawDomino(Domino dom, GraphicsContext gc, int x, int y){
         gc.setFill(Color.IVORY);
         if(dom.isDouble()){
@@ -374,6 +501,17 @@ public class Display extends javafx.application.Application{
         }
     }
 
+    /**************************************************************************
+     * drawDots                                                               *
+     *                                                                        *
+     * Draws the dots on a Domino at the given coordinates. If statements are *
+     * ordered so each represents a dot in a specific position on the domino  *
+     * Arguments: numDots - number of dots to be drawn                        *
+     *            gc - GraphicsContext for Canvas GameBoard                   *
+     *            x - x coordinate                                            *
+     *            y - y coordinate                                            *
+     * Returns nothing                                                        *
+     *************************************************************************/
     private void drawDots(int numDots, GraphicsContext gc, int x, int y){
         if(numDots == 4 || numDots == 5 || numDots == 6 || numDots == 7
                 || numDots == 8 || numDots == 9){
